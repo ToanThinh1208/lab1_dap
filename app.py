@@ -41,7 +41,7 @@ if "DIALOGFLOW_CREDENTIALS" in st.secrets:
         # Thư viện Dialogflow sẽ tự động đọc từ biến môi trường này
         os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = temp_file_path
 
-        st.success("Credentials Dialogflow đã được tải và cấu hình thành công.")
+        # st.success("Credentials Dialogflow đã được tải và cấu hình thành công.")
 
         # --- Khởi tạo Dialogflow Session Client ---
         project_id = credentials_info.get("project_id")

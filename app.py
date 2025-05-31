@@ -12,7 +12,66 @@ import json # Thêm import này
 from dotenv import load_dotenv
 
 load_dotenv()  # tự động tìm file .env
+# Kiểm tra xem secrets đã được cấu hình chưa
+if "DIALOGFLOW_CREDENTIALS" in st.secrets:
+    try:
+        # Lấy chuỗi JSON từ secret đã định nghĩa trên Streamlit Cloud
+        dialogflow_credentials_json_string = st.secrets["DIALOGFLOW_CREDENTIALS"]
 
+        # Giải mã chuỗi JSON thành dictionary
+        credentials_info = json.loads(dialogflow_credentials_json_string)
+
+        # Tạo một file tạm thời để lưu credentials
+        # Thư viện Google Cloud/Dialogflow thường yêu cầu đường dẫn đến file JSON
+        with tempfile.NamedTemporaryFile(mode="w", delete=False, suffix=".json") as temp_file:
+            json.dump(credentials_info, temp_file)
+            temp_file_path = temp_file.name
+
+        # Đặt biến môi trường GOOGLE_APPLICATION_CREDENTIALS
+        # Thư viện Dialogflow sẽ tự động đọc từ biến môi trường này
+        os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = temp_file_path
+
+        st.success("Credentials Dialogflow đã được tải và cấu hình thành công.")
+
+        # --- Khởi tạo Dialogflow Session Client ---
+        project_id = credentials_info.get("project_id")
+        if not project_id:
+            st.error("Lỗi: Không tìm thấy 'project_id' trong credentials Dialogflow. Vui lòng kiểm tra file JSON.")
+        else:
+            # Khởi tạo SessionClient. Nó sẽ tự động sử dụng biến môi trường GOOGLE_APPLICATION_CREDENTIALS
+            session_client = dialogflow.SessionsClient()
+            # session_path = session_client.project_agent_session_path(project_id, session_id)
+            # ... (tiếp tục code xử lý Dialogflow của bạn ở đây)
+
+            # Ví dụ: nếu bạn có hàm gửi tin nhắn tới Dialogflow
+            # response_text = send_message_to_dialogflow(project_id, session_client, user_message)
+            # st.write(f"Bot: {response_text}")
+
+            # Lưu ý: file tạm thời sẽ tự động bị xóa khi ứng dụng Streamlit dừng hoặc khi hệ điều hành dọn dẹp.
+            # Đối với ứng dụng Streamlit, file này sẽ tồn tại trong suốt phiên hoạt động của ứng dụng.
+
+    except json.JSONDecodeError:
+        st.error("Lỗi: Không thể giải mã chuỗi JSON từ Streamlit Secrets. Vui lòng kiểm tra định dạng của secret.")
+    except Exception as e:
+        st.error(f"Lỗi không xác định khi khởi tạo Dialogflow: {e}")
+else:
+    st.error("Lỗi: Không tìm thấy secret 'DIALOGFLOW_CREDENTIALS'. Vui lòng cấu hình trên Streamlit Cloud.")
+    st.info("Hướng dẫn: Vào cài đặt ứng dụng trên Streamlit Cloud -> Secrets, thêm DIALOGFLOW_CREDENTIALS và dán toàn bộ nội dung file JSON vào.")
+
+# --- Phần còn lại của ứng dụng Streamlit của bạn ---
+# Ví dụ:
+st.title("Chatbot Hỗ trợ (Dialogflow)")
+user_input = st.text_input("Chào bạn! Hãy hỏi tôi bất cứ điều gì.")
+
+if user_input:
+    st.write(f"Bạn: {user_input}")
+    # Gọi hàm xử lý Dialogflow của bạn ở đây
+    # Ví dụ:
+    # if 'session_client' in locals() and 'project_id' in locals():
+    #     response_text = send_message_to_dialogflow(project_id, session_client, user_input)
+    #     st.write(f"Bot: {response_text}")
+    # else:
+    #     st.error("Dialogflow chưa được khởi tạo thành công.")
 def detect_intent_texts(project_id, session_id, text, language_code):
     """Returns the result of detect intent with texts as inputs.
 

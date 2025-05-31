@@ -4,6 +4,6 @@ numpy
 plotly
 pandas
 datetime  
-google.cloud 
+dialogflow_v2
 uuid
 scikit-learn

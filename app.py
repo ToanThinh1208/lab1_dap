@@ -10,6 +10,8 @@ import uuid
 import os
 import json # Thêm import này
 from dotenv import load_dotenv
+import tempfile
+
 
 load_dotenv()  # tự động tìm file .env
 # --- Cấu hình trang (Luôn đặt ở đầu file) ---
@@ -67,19 +69,6 @@ else:
     st.info("Hướng dẫn: Vào cài đặt ứng dụng trên Streamlit Cloud -> Secrets, thêm DIALOGFLOW_CREDENTIALS và dán toàn bộ nội dung file JSON vào.")
 
 # --- Phần còn lại của ứng dụng Streamlit của bạn ---
-# Ví dụ:
-st.title("Chatbot Hỗ trợ (Dialogflow)")
-user_input = st.text_input("Chào bạn! Hãy hỏi tôi bất cứ điều gì.")
-
-if user_input:
-    st.write(f"Bạn: {user_input}")
-    # Gọi hàm xử lý Dialogflow của bạn ở đây
-    # Ví dụ:
-    # if 'session_client' in locals() and 'project_id' in locals():
-    #     response_text = send_message_to_dialogflow(project_id, session_client, user_input)
-    #     st.write(f"Bot: {response_text}")
-    # else:
-    #     st.error("Dialogflow chưa được khởi tạo thành công.")
 def detect_intent_texts(project_id, session_id, text, language_code):
     """Returns the result of detect intent with texts as inputs.
 

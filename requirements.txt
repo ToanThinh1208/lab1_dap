@@ -1,0 +1,9 @@
+ streamlit
+#  yfinance as yf
+numpy
+plotly
+pandas
+datetime  
+google.cloud 
+uuid
+scikit-learn

@@ -1,9 +1,7 @@
- streamlit
-#  yfinance as yf
+streamlit
 numpy
 plotly
 pandas
-datetime  
-dialogflow_v2
-uuid
+google-cloud-dialogflow
+python-dotenv
 scikit-learn

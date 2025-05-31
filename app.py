@@ -12,6 +12,32 @@ import json # Thêm import này
 from dotenv import load_dotenv
 
 load_dotenv()  # tự động tìm file .env
+if "DIALOGFLOW_SERVICE_ACCOUNT_JSON" in st.secrets:
+    # Đọc từ Streamlit Secrets
+    credentials_json = st.secrets["DIALOGFLOW_SERVICE_ACCOUNT_JSON"]
+    # Tạo đối tượng Credentials từ chuỗi JSON
+    credentials = service_account.Credentials.from_service_account_info(json.loads(credentials_json))
+    # Sử dụng credentials để khởi tạo SessionsClient
+    session_client = dialogflow.SessionsClient(credentials=credentials)
+else:
+    # Fallback cho môi trường local nếu bạn dùng GOOGLE_APPLICATION_CREDENTIALS
+    # hoặc một cách quản lý key khác local
+    # Đảm bảo bạn đã đặt biến môi trường GOOGLE_APPLICATION_CREDENTIALS
+    # trỏ đến file JSON key của bạn trên local
+    # Ví dụ: export GOOGLE_APPLICATION_CREDENTIALS="/path/to/your/key.json"
+    # Hoặc đọc file trực tiếp nếu bạn muốn chạy local
+    try:
+        # Giả định file key nằm ở gốc dự án khi chạy local
+        with open("lab1-hxwy-80c276190b0a.json", "r") as f: # Thay bằng tên file key của bạn
+            credentials_info = json.load(f)
+        credentials = service_account.Credentials.from_service_account_info(credentials_info)
+        session_client = dialogflow.SessionsClient(credentials=credentials)
+    except FileNotFoundError:
+        st.error("Lỗi: Không tìm thấy file khóa Dialogflow. Vui lòng kiểm tra cấu hình.")
+        session_client = None # Đảm bảo session_client là None nếu không thể khởi tạo
+    except Exception as e:
+        st.error(f"Lỗi khi khởi tạo Dialogflow client: {e}")
+        session_client = None
 def detect_intent_texts(project_id, session_id, text, language_code):
     """Returns the result of detect intent with texts as inputs.
 

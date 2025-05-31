@@ -12,6 +12,14 @@ import json # Thêm import này
 from dotenv import load_dotenv
 
 load_dotenv()  # tự động tìm file .env
+# --- Cấu hình trang (Luôn đặt ở đầu file) ---
+st.set_page_config(
+    page_title="Stock Predictor & Chatbot",
+    page_icon="📈🤖",
+    layout="wide", # Sử dụng layout wide để 2 cột hiển thị tốt hơn
+    initial_sidebar_state="expanded"
+)
+
 # Kiểm tra xem secrets đã được cấu hình chưa
 if "DIALOGFLOW_CREDENTIALS" in st.secrets:
     try:
@@ -98,13 +106,6 @@ def detect_intent_texts(project_id, session_id, text, language_code):
 
 # đọc data"
 data = pd.read_csv("./googl_daily_prices.csv")
-# --- Cấu hình trang (Luôn đặt ở đầu file) ---
-st.set_page_config(
-    page_title="Stock Predictor & Chatbot",
-    page_icon="📈🤖",
-    layout="wide", # Sử dụng layout wide để 2 cột hiển thị tốt hơn
-    initial_sidebar_state="expanded"
-)
 
 st.title("Ứng dụng Dự đoán Giá Cổ phiếu & Chatbot")
 

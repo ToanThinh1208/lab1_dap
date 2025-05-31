@@ -236,7 +236,7 @@ with col1:
 # --- Cột phải: Chatbot ---
 
 with col2:
-    st.header("🤖 Chatbot Hỗ trợ (Dialogflow)")
+    st.header("🤖 Chatbot Hỗ trợ")
 
     st.markdown(
         """
